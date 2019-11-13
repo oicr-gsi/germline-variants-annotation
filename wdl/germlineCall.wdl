@@ -13,9 +13,8 @@ workflow  HaplotypeCallerVariantCalling {
     String? dbsnpVCF
     String? kgIndels
     String? millsIndelsVCF
-    String? DBNSFP
-    String? FASTA
-    String? LOFSCORE
+    String? dbNSFP
+    String? lofScore
     String? tmp # temp directory
   }
 
@@ -61,9 +60,9 @@ workflow  HaplotypeCallerVariantCalling {
       dbsnpVCF=dbsnpVCF,
       kgIndels=kgIndels,
       millsIndelsVCF=millsIndelsVCF,
-      DBNSFP=DBNSFP,
-      FASTA=FASTA,
-      LOFSCORE=LOFSCORE
+      dbNSFP=dbNSFP,
+      refFasta=refFasta,
+      lofScore=lofScore
   }
 
   output {
@@ -72,12 +71,18 @@ workflow  HaplotypeCallerVariantCalling {
   }
 
   parameter_meta {
-    variantsfile: "Input bam."
-    bamIndex: "Input bam index (must be .bam.bai)."
+    vcfs: "Input txt file containing file paths for all VCFs to be combined."
     outputFileNamePrefix: "Output prefix to prefix output file names with."
-    windowSize: "The size of non-overlapping windows."
-    minimumMappingQuality: "Mapping quality value below which reads are ignored."
-    chromosomesToAnalyze: "Chromosomes in the bam reference file."
+    refFasta: "Path to reference fasta."
+    omniVCF: "Path to 1000 G omni vcf."
+    kgSNP: "Path to 1000 G snp vcf."
+    hapMapVCF: "Path to hapmap sites vcf."
+    dbsnpVCF: "Path to dbSNP vcf."
+    kgIndels: "Path to 1000 G phase 1 indels vcf."
+    millsIndelsVCF: "Path to Mills indels vcf."
+    dbNSFP: "Path to dbNSFP file."
+    refFasta: "Path to the reference fasta file."
+    lofScore: "Path to lofScores txt file."
   }
 
   meta {
@@ -292,6 +297,13 @@ task vqsr {
     jointGTVCF: "Input VCFs generated from combined calling of GCVF."
     modules: "Environment module name and version to load (space separated) before command execution."
     mem: "Memory (in GB) to allocate to the job."
+    refFasta: "Path to reference fasta."
+    omniVCF: "Path to 1000 G omni vcf."
+    kgSNP: "Path to 1000 G snp vcf."
+    hapMapVCF: "Path to hapmap sites vcf."
+    dbsnpVCF: "Path to dbSNP vcf."
+    kgIndels: "Path to 1000 G phase 1 indels vcf."
+    millsIndelsVCF: "Path to Mills indels vcf."
   }
 
   meta {
