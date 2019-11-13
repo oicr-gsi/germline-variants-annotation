@@ -1,0 +1,1 @@
+./germlinePipe.sh variantfile.txt example_01
