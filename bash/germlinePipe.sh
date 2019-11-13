@@ -2,6 +2,11 @@
 variants=$1 # file containing path to GATKHaplotypeCaller GVCF files
 outputname=$2
 
+# if [[ -z $variants ]]; then
+#   setDownstreamFlag="true"
+# else
+#   setDownstreamFlag="false"
+
 logd=`pwd`
 
 script01=`pwd`/01_jointCalling.sh
@@ -114,7 +119,7 @@ echo "    -rscriptFile ${recalibrate_SNP_plots_R}" >> $script03
 echo "# apply snp model" >> $script03
 echo "java -jar \${GATK_ROOT}/GenomeAnalysisTK.jar \\" >> $script03
 echo "    -T ApplyRecalibration \\" >> $script03
-echo "    -R /.mounts/labs/PDE/data/reference/hg19/gatk/2.8/ucsc.hg19.fasta \\" >> $script03
+echo "    -R $refFasta \\" >> $script03
 echo "    -input $jointGTVCF \\" >> $script03
 echo "    -mode SNP \\" >> $script03
 echo "    --ts_filter_level 99.0 \\" >> $script03
@@ -124,7 +129,7 @@ echo "    -o $recalSNPIndelVCF" >> $script03
 echo "#build indel model" >> $script03
 echo "java -jar \${GATK_ROOT}/GenomeAnalysisTK.jar \\" >> $script03
 echo "    -T VariantRecalibrator \\" >> $script03
-echo "    -R /.mounts/labs/PDE/data/reference/hg19/gatk/2.8/ucsc.hg19.fasta \\" >> $script03
+echo "    -R $refFasta \\" >> $script03
 echo "    -input $recalSNPIndelVCF \\" >> $script03
 echo "    --resource:mills,known=false,training=true,truth=true,prior=12.0 $millsIndelsVCF \\" >> $script03
 echo "    --resource:1000G,known=false,training=true,truth=false,prior=10.0 $kgIndels \\" >> $script03
@@ -165,7 +170,7 @@ echo "module load tabix/1.9; cat $vqsrVCF | grep -v END | grep -v GVCFBlock | se
 # run some variant stats
 echo '#!/bin/bash' > $script04b
 echo "module load picard/2.19.2 " >> $script04b
-echo "ava -jar ${PICARD_ROOT}/picard.jar CollectVariantCallingMetrics \\" >> $script04b
+echo "java -jar ${PICARD_ROOT}/picard.jar CollectVariantCallingMetrics \\" >> $script04b
 echo "INPUT=$vqsrVCF \\" >> $script04b
 echo "OUTPUT=${vqsrVCF}.metrics \\" >> $script04b
 echo "DBSNP=$dbsnpVCF " >> $script04b
