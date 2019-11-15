@@ -170,7 +170,7 @@ echo "module load tabix/1.9; cat $vqsrVCF | grep -v END | grep -v GVCFBlock | se
 # run some variant stats
 echo '#!/bin/bash' > $script04b
 echo "module load picard/2.19.2 " >> $script04b
-echo "java -jar ${PICARD_ROOT}/picard.jar CollectVariantCallingMetrics \\" >> $script04b
+echo "java -jar \${PICARD_ROOT}/picard.jar CollectVariantCallingMetrics \\" >> $script04b
 echo "INPUT=$vqsrVCF \\" >> $script04b
 echo "OUTPUT=${vqsrVCF}.metrics \\" >> $script04b
 echo "DBSNP=$dbsnpVCF " >> $script04b
@@ -190,25 +190,25 @@ echo "DBNSFP=$DBNSFP" >> $script05
 echo "FASTA=$FASTA" >> $script05
 echo "LOFSCORE=$LOFSCORE" >> $script05
 echo "# perl/5.22.2-tgl" >> $script05
-echo "export LD_LIBRARY_PATH=/oicr/local/analysis/sw/perl/perl-5.22.2-tgl/lib:$LD_LIBRARY_PATH;" >> $script05
-echo "export PERL5LIB=/oicr/local/analysis/sw/perl/perl-5.22.2-tgl/lib:$PERL5LIB" >> $script05
-echo "export PATH=/oicr/local/analysis/sw/perl/perl-5.22.2-tgl/bin:$PATH" >> $script05
+echo "export LD_LIBRARY_PATH=/oicr/local/analysis/sw/perl/perl-5.22.2-tgl/lib:\$LD_LIBRARY_PATH;" >> $script05
+echo "export PERL5LIB=/oicr/local/analysis/sw/perl/perl-5.22.2-tgl/lib:\$PERL5LIB" >> $script05
+echo "export PATH=/oicr/local/analysis/sw/perl/perl-5.22.2-tgl/bin:\$PATH" >> $script05
 echo "# vep/92" >> $script05
-echo "export PATH=/oicr/local/analysis/sw/vep/vep92:$PATH" >> $script05
-echo "export PATH=/oicr/local/analysis/sw/vep/vep92/htslib:$PATH" >> $script05
-echo "export PATH=/oicr/local/analysis/sw/vep/vep92/samtools/bin:$PATH" >> $script05
-echo "export PERL5LIB=/oicr/local/analysis/sw/vep/vep92:$PATH" >> $script05
+echo "export PATH=/oicr/local/analysis/sw/vep/vep92:\$PATH" >> $script05
+echo "export PATH=/oicr/local/analysis/sw/vep/vep92/htslib:\$PATH" >> $script05
+echo "export PATH=/oicr/local/analysis/sw/vep/vep92/samtools/bin:\$PATH" >> $script05
+echo "export PERL5LIB=/oicr/local/analysis/sw/vep/vep92:\$PATH" >> $script05
 echo "export VEP_PATH=/oicr/local/analysis/sw/vep/vep92;" >> $script05
 echo "export VEP_DATA=/oicr/local/analysis/sw/vep/vep92/.cache;" >> $script05
 echo "# vcf2maf" >> $script05
-echo "export PATH=/.mounts/labs/PDE/Modules/sw/vcf2maf/mskcc-vcf2maf-decbf60:$PATH;" >> $script05
+echo "export PATH=/.mounts/labs/PDE/Modules/sw/vcf2maf/mskcc-vcf2maf-decbf60:\$PATH;" >> $script05
 echo "vep=/oicr/local/analysis/sw/vep/vep92/vep" >> $script05
-echo "$vep -i $gvcf2vcf \\" >> $script05
-echo "                --offline --dir_cache $VEP_DATA \\" >> $script05
+echo "\$vep -i $gvcf2vcf \\" >> $script05
+echo "                --offline --dir_cache \$VEP_DATA \\" >> $script05
 echo "                --assembly GRCh37 \\" >> $script05
-echo "                --database $VEP_DATA \\" >> $script05
+echo "                --database \$VEP_DATA \\" >> $script05
 echo "                --force_overwrite \\" >> $script05
-echo "                --fasta $FASTA \\" >> $script05
+echo "                --fasta \$FASTA \\" >> $script05
 echo "                --variant_class \\" >> $script05
 echo "                --hgvs \\" >> $script05
 echo "                --symbol \\" >> $script05
@@ -217,8 +217,8 @@ echo "                --check_existing \\" >> $script05
 echo "                --humdiv \\" >> $script05
 echo "                --sift b \\" >> $script05
 echo "                --polyphen b \\" >> $script05
-echo "                --plugin dbNSFP,$DBNSFP,genename,clinvar_golden_stars,clinvar_clnsig,1000Gp3_AF,ExAC_AF,gnomAD_exomes_AF,gnomAD_genomes_AF,SIFT_pred,Polyphen2_HDIV_pred,MutationTaster_pred,FATHMM_pred,REVEL_score,CADD_phred,GERP++_RS \\" >> $script05
-echo "                --plugin LoFtool,$LOFSCORE \\" >> $script05
+echo "                --plugin dbNSFP,\$DBNSFP,genename,clinvar_golden_stars,clinvar_clnsig,1000Gp3_AF,ExAC_AF,gnomAD_exomes_AF,gnomAD_genomes_AF,SIFT_pred,Polyphen2_HDIV_pred,MutationTaster_pred,FATHMM_pred,REVEL_score,CADD_phred,GERP++_RS \\" >> $script05
+echo "                --plugin LoFtool,\$LOFSCORE \\" >> $script05
 echo "                --vcf -o $annotatedVCF" >> $script05
 
 # clean up
