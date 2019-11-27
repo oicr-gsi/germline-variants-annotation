@@ -32,6 +32,13 @@ annotatedVCF=`pwd`/${outputname}_annotated.vep.vcf.gz
 jobname05="annotateVCF_${outputname}"
 script05=`pwd`/05_annotateVCF.sh
 
+filterLevel1TSV=`pwd`/{outputname}_annotated.vep.filter01.tsv
+jobname06="vcf2tsv_${outputname}"
+script06=`pwd`/06_vcf2tsv.sh
+
+jobname06="housekeeping_${outputname}"
+script06=`pwd`/07_housekeeping.sh
+
 
 # combined calling
 # references
@@ -149,7 +156,7 @@ echo "    -recalFile ${recalibrate_INDEL_recal} \\" >> $script03
 echo "    -tranchesFile ${recalibrate_INDEL_tranches} \\" >> $script03
 echo "    -rscriptFile ${recalibrate_INDEL_plots_R} " >> $script03
 echo "# apply indel model " >> $script03
-echo "java -jar ${GATK_ROOT}/GenomeAnalysisTK.jar \\" >> $script03
+echo "java -jar \${GATK_ROOT}/GenomeAnalysisTK.jar \\" >> $script03
 echo "    -T ApplyRecalibration \\" >> $script03
 echo "    -R $refFasta \\" >> $script03
 echo "    -input $recalSNPIndelVCF \\" >> $script03
@@ -221,7 +228,19 @@ echo "                --plugin dbNSFP,\$DBNSFP,genename,clinvar_golden_stars,cli
 echo "                --plugin LoFtool,\$LOFSCORE \\" >> $script05
 echo "                --vcf -o $annotatedVCF" >> $script05
 
-# clean up
+# vcf to tsv and level 1 filtering
+vcf2tsvpy=/.mounts/labs/TGL/gsi/pipeline/data/TGL22/EXOME/Seqware_GATKHaplotypeCaller/JointCalling/vcf2tsv.py
+echo '#!/bin/bash' > $script06
+echo "zless $annotatedVCF > ${annotateVCF}_uncompressed.vcf" >> $script06
+echo "python $vcf2tsvpy `pwd` ${annotateVCF}_uncompressed.vcf" >> $script06
+
+# clean up : delete all Intermediate files
+echo '#!/bin/bash' > $script07
+echo "rm ${annotateVCF}_uncompressed.vcf" >> $script07
+echo "rm ${jointGTVCF}" >> $script07
+echo "rm ${jointCalledVCF}" >> $script07
+# echo "rm ${vqsrVCF}" >> $script07
+echo "rm -rf $tmp" >> $script07
 
 chmod +x $script01
 qsub -V -l h_vmem=32g -N $jobname01 -e $logd -o $logd $script01
@@ -235,3 +254,7 @@ chmod +x $script04b
 qsub -V -l h_vmem=32g -hold_jid $jobname03 -N $jobname04b -e $logd -o $logd $script04b
 chmod +x $script05
 qsub -V -l h_vmem=32g -hold_jid $jobname04 -N $jobname05 -e $logd -o $logd $script05
+chmod +x $script06
+qsub -V -l h_vmem=32g -hold_jid $jobname05 -N $jobname06 -e $logd -o $logd $script06
+chmod +x $script07
+qsub -V -l h_vmem=32g -hold_jid $jobname06 -N $jobname07 -e $logd -o $logd $script07

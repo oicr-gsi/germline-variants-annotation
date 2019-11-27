@@ -5,7 +5,6 @@ workflow  HaplotypeCallerVariantCalling {
   input {
     File varFile
     String outputFileNamePrefix = outputPrefix
-    # references --> to be replaced by data modulator
     String? refFasta
     String? omniVCF
     String? kgSNP
